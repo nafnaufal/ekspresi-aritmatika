@@ -40,7 +40,7 @@ int main()
                     postInfix.pop_back();
                 }
             }
-            int tmpAngka = (stoi(tmp) * 10) + ((int) preInfix[i] - 48);
+            int tmpAngka = (stoi(tmp) * 10) + ((int)preInfix[i] - 48);
             tmp = to_string(tmpAngka);
             postInfix.push_back(tmp);
         }
@@ -74,7 +74,9 @@ int main()
         string tmps = "-";
         tmps.append(tmp);
         postInfix[0] = tmps;
-    }else if(kalimin){
+    }
+    else if (kalimin)
+    {
         postInfix.insert(postInfix.begin(), "*");
         postInfix.insert(postInfix.begin(), "-1");
     }
@@ -82,7 +84,6 @@ int main()
     for (auto i = postInfix.begin(); i != postInfix.end(); ++i)
         cout << *i << " ";
 }
-
 
 bool angka(char input)
 {

@@ -1,0 +1,73 @@
+#include <iostream>
+#include <stack>
+#include <cstring>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+bool angka(char input)
+{
+    return input != '(' && input != ')' && input != '+' && input != '-' && input != '/' && input != '*' && input != '%';
+}
+bool is_operator(char input)
+{
+    return input == '+' || input == '-' || input == '/' || input == '*' || input == '%';
+}
+bool is_paranthases(char input)
+{
+    return input == '(' || input == ')';
+}
+bool is_left_p(char input)
+{
+    return input == '(';
+}
+bool is_right_p(char input)
+{
+    return input == ')';
+}
+bool is_minus(char input)
+{
+    return input == '-';
+}
+
+int main()
+{
+    string preInfix, tmp = "0";
+    cin >> preInfix;
+
+    vector <string> postInfix;
+
+    for (int i = 0; i < preInfix.length(); i++)
+    {
+        if (angka(preInfix[i])){
+            // cout << preInfix[i];
+            int tmpAngka = (stoi(tmp) * 10) + ((int) preInfix[i] - 48);
+            tmp = to_string(tmpAngka);
+            postInfix.push_back(tmp);
+        }
+        if (!angka(preInfix[i]))
+        {
+            tmp = "0";
+            if (is_minus(preInfix[i]) && !angka(preInfix[i - 1]))
+            {
+                // cout << " -1 * ";
+                postInfix.push_back("-1");
+                postInfix.push_back("*");
+            }else if(!angka(preInfix[i + 1])){
+                // cout << " " << preInfix[i];
+                tmp[0] = preInfix[i];
+                postInfix.push_back(tmp);
+            }
+            else
+            {
+                // cout << " " << preInfix[i] << " ";
+                tmp[0] = preInfix[i];
+                postInfix.push_back(tmp);
+            }
+            tmp = "0";
+        }
+    }
+    for (auto i = postInfix.begin(); i != postInfix.end(); ++i)
+        cout << *i << " ";
+}

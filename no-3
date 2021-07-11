@@ -125,4 +125,16 @@ void hitung(string input){
 	}
 	cout << data.top() << endl;
 }
-int main(){}
+int main(){
+string ekspresi; getline(cin,ekspresi);
+	string new_ekspresi="";
+	for(i=0;i<ekspresi.length();i++){
+		if(ekspresi[i]==' ')
+			continue;
+		else
+			new_ekspresi+=ekspresi[i];
+	}
+	hitung(new_ekspresi);
+	
+	return 0;
+}

@@ -1,0 +1,169 @@
+#include <iostream>
+#include <stack>
+#include <cstring>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+bool angka(char input);
+bool is_operator(char input);
+bool is_left_p(string input);
+bool is_right_p(string input);
+bool is_minus(char input);
+bool is_angka_str(string input);
+bool is_operator_str(string input);
+int precedence(string input);
+
+int main()
+{
+    string preInfix, tmp = "0";
+    getline(cin, preInfix);
+    int lop = 0;
+    bool kalimin = false;
+    vector<string> postfix;
+    stack<string> op;
+    vector<string> postInfix;
+    if (is_minus(preInfix[0]))
+    {
+        kalimin = true;
+        lop = 1;
+    }
+    for (long unsigned int i = lop; i < preInfix.length(); i++)
+    {
+        if (angka(preInfix[i]) && preInfix[i] != ' ')
+        {
+            // cout << preInfix[i];
+            if (i > 0 && !postInfix.empty())
+            {
+                if (postInfix.back() == tmp)
+                {
+                    postInfix.pop_back();
+                }
+            }
+            int tmpAngka = (stoi(tmp) * 10) + ((int)preInfix[i] - 48);
+            tmp = to_string(tmpAngka);
+            postInfix.push_back(tmp);
+        }
+        else if (!angka(preInfix[i]))
+        {
+            tmp = "0";
+            if (is_minus(preInfix[i]) && !angka(preInfix[i - 1]))
+            {
+                // cout << " -1 * ";
+                postInfix.push_back("-1");
+                postInfix.push_back("*");
+            }
+            else if (!angka(preInfix[i + 1]))
+            {
+                // cout << " " << preInfix[i];
+                tmp[0] = preInfix[i];
+                postInfix.push_back(tmp);
+            }
+            else
+            {
+                // cout << " " << preInfix[i] << " ";
+                tmp[0] = preInfix[i];
+                postInfix.push_back(tmp);
+            }
+            tmp = "0";
+        }
+    }
+    if (kalimin && angka(preInfix[1]))
+    {
+        tmp = postInfix[0];
+        string tmps = "-";
+        tmps.append(tmp);
+        postInfix[0] = tmps;
+    }
+    else if (kalimin)
+    {
+        postInfix.insert(postInfix.begin(), "*");
+        postInfix.insert(postInfix.begin(), "-1");
+    }
+    //convert postfix
+    for (long unsigned int i = 0; i < postInfix.size(); i++)
+    {
+        if (is_angka_str(postInfix[i]))
+        {
+            postfix.push_back(postInfix[i]);
+        }
+        else if (is_left_p(postInfix[i]))
+        {
+            op.push(postInfix[i]);
+        }
+        else if (is_right_p(postInfix[i]))
+        {
+            while (!op.empty())
+            {
+                postfix.push_back(op.top());
+                op.pop();
+            }
+            op.pop();
+        }
+        else if (is_operator_str(postInfix[i]))
+        {
+            if (op.empty() || is_left_p(op.top()))
+            {
+                op.push(postInfix[i]);
+            }
+            else
+            {
+                while (!op.empty() && !is_left_p(op.top()) && (precedence(postInfix[i]) <= precedence(op.top())))
+                {
+                    postfix.push_back(op.top());
+                    op.pop();
+                }
+                op.push(postInfix[i]);
+            }
+        }
+    }
+    while (!op.empty())
+    {
+        postfix.push_back(op.top());
+        op.pop();
+    }
+    for (auto i = postfix.begin(); i != postfix.end(); ++i)
+        cout << *i << " ";
+}
+
+bool angka(char input)
+{
+    return input != '(' && input != ')' && input != '+' && input != '-' && input != '/' && input != '*' && input != '%';
+}
+bool is_operator(char input)
+{
+    return input == '+' || input == '-' || input == '/' || input == '*' || input == '%';
+}
+bool is_left_p(string input)
+{
+    return input == "(";
+}
+bool is_right_p(string input)
+{
+    return input == ")";
+}
+bool is_minus(char input)
+{
+    return input == '-';
+}
+bool is_angka_str(string input)
+{
+    return input != "(" && input != ")" && input != "+" && input != "-" && input != "/" && input != "*" && input != "%";
+}
+bool is_operator_str(string input)
+{
+    return input == "+" || input == "-" || input == "/" || input == "*" || input == "%";
+}
+int precedence(string input)
+{
+    if (input == "*" || input == "/")
+    {
+        return 2;
+    }
+    else if (input == "+" || input == "-")
+    {
+        return 3;
+    }
+    return 1;
+}

@@ -21,8 +21,7 @@ int main()
     getline(cin, preInfix);
     int lop = 0;
     bool kalimin = false;
-    vector<string> postfix;
-    stack<string> op;
+
     vector<string> postInfix;
     if (is_minus(preInfix[0]))
     {
@@ -81,49 +80,8 @@ int main()
         postInfix.insert(postInfix.begin(), "*");
         postInfix.insert(postInfix.begin(), "-1");
     }
-    //convert postfix
-    for (long unsigned int i = 0; i < postInfix.size(); i++)
-    {
-        if (is_angka_str(postInfix[i]))
-        {
-            postfix.push_back(postInfix[i]);
-        }
-        else if (is_left_p(postInfix[i]))
-        {
-            op.push(postInfix[i]);
-        }
-        else if (is_right_p(postInfix[i]))
-        {
-            while (!op.empty())
-            {
-                postfix.push_back(op.top());
-                op.pop();
-            }
-            op.pop();
-        }
-        else if (is_operator_str(postInfix[i]))
-        {
-            if (op.empty() || is_left_p(op.top()))
-            {
-                op.push(postInfix[i]);
-            }
-            else
-            {
-                while (!op.empty() && !is_left_p(op.top()) && (precedence(postInfix[i]) <= precedence(op.top())))
-                {
-                    postfix.push_back(op.top());
-                    op.pop();
-                }
-                op.push(postInfix[i]);
-            }
-        }
-    }
-    while (!op.empty())
-    {
-        postfix.push_back(op.top());
-        op.pop();
-    }
-    for (auto i = postfix.begin(); i != postfix.end(); ++i)
+    cout << "Print : ";
+    for (auto i = postInfix.begin(); i != postInfix.end(); ++i)
         cout << *i << " ";
 }
 

@@ -41,7 +41,7 @@ int main()
 
     vector <string> postInfix;
 
-    for (int i = 0; i < preInfix.length(); i++)
+    for (long unsigned int i = 0; i < preInfix.length(); i++)
     {
         if (angka(preInfix[i]) && preInfix[i] != ' ')
         {

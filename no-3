@@ -22,8 +22,8 @@ double applyOp(double no1, double no2, char op){
         case '/': return no1 / no2;
         }
     return 0;
-    }
-    void hitung(string input){
+}
+void hitung(string input){
 	stack<double> data;
 	stack<char>operasi;
 	
@@ -74,7 +74,16 @@ double applyOp(double no1, double no2, char op){
 				} else {
 					while(!operasi.empty() && precedence(operasi.top()) >= precedence(input[i]) && !isOp(input[i-1])){
 						if(operasi.top() == '%'){
-							int value2 = data.top(); data.
+							int value2 = data.top(); data.pop();
+		                    int value1 = data.top(); data.pop();
+		                    operasi.pop();
+		                    data.push(value1%value2);
+						} else {
+							double value2 = data.top(); data.pop();
+		                    double value1 = data.top(); data.pop();
+		                    char op = operasi.top(); operasi.pop();
+		                    data.push(applyOp(value1, value2, op));
+						}
 					}
 					if((isdigit(input[i+1]) || input[i+1]=='(') && (isdigit(input[i-1]) || input[i-1]==')'))
 						operasi.push(input[i]);
@@ -101,5 +110,19 @@ double applyOp(double no1, double no2, char op){
 			}
 		}
 	}
-    int main(){
-    }
+	while(!operasi.empty()){
+		if(operasi.top() == '%'){
+			int value2 = data.top(); data.pop();
+		    int value1 = data.top(); data.pop();
+		    operasi.pop();
+		    data.push(value1%value2);
+		} else {
+			double value2 = data.top(); data.pop();
+		    double value1 = data.top(); data.pop();
+		    char op = operasi.top(); operasi.pop();
+		    data.push(applyOp(value1, value2, op));
+		}
+	}
+	cout << data.top() << endl;
+}
+int main(){}

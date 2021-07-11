@@ -6,48 +6,37 @@
 
 using namespace std;
 
-bool angka(char input)
-{
-    return input != '(' && input != ')' && input != '+' && input != '-' && input != '/' && input != '*' && input != '%';
-}
-bool is_operator(char input)
-{
-    return input == '+' || input == '-' || input == '/' || input == '*' || input == '%';
-}
-bool is_paranthases(char input)
-{
-    return input == '(' || input == ')';
-}
-bool is_left_p(char input)
-{
-    return input == '(';
-}
-bool is_right_p(char input)
-{
-    return input == ')';
-}
-bool is_minus(char input)
-{
-    return input == '-';
-}
-bool is_angka_str(string input){
-    return input != "(" && input != ")" && input != "+" && input != "-" && input != "/" && input != "*" && input != "%";
-}
+bool angka(char input);
+bool is_operator(char input);
+bool is_left_p(string input);
+bool is_right_p(string input);
+bool is_minus(char input);
+bool is_angka_str(string input);
+bool is_operator_str(string input);
+int precedence(string input);
 
 int main()
 {
     string preInfix, tmp = "0";
     getline(cin, preInfix);
+    int lop = 0;
+    bool kalimin = false;
 
-    vector <string> postInfix;
-
-    for (long unsigned int i = 0; i < preInfix.length(); i++)
+    vector<string> postInfix;
+    if (is_minus(preInfix[0]))
+    {
+        kalimin = true;
+        lop = 1;
+    }
+    for (long unsigned int i = lop; i < preInfix.length(); i++)
     {
         if (angka(preInfix[i]) && preInfix[i] != ' ')
         {
             // cout << preInfix[i];
-            if(i > 0){
-                if(postInfix.back() == tmp){
+            if (i > 0 && !postInfix.empty())
+            {
+                if (postInfix.back() == tmp)
+                {
                     postInfix.pop_back();
                 }
             }
@@ -63,7 +52,9 @@ int main()
                 // cout << " -1 * ";
                 postInfix.push_back("-1");
                 postInfix.push_back("*");
-            }else if(!angka(preInfix[i + 1])){
+            }
+            else if (!angka(preInfix[i + 1]))
+            {
                 // cout << " " << preInfix[i];
                 tmp[0] = preInfix[i];
                 postInfix.push_back(tmp);
@@ -77,6 +68,59 @@ int main()
             tmp = "0";
         }
     }
+    if (kalimin && angka(preInfix[1]))
+    {
+        tmp = postInfix[0];
+        string tmps = "-";
+        tmps.append(tmp);
+        postInfix[0] = tmps;
+    }else if(kalimin){
+        postInfix.insert(postInfix.begin(), "*");
+        postInfix.insert(postInfix.begin(), "-1");
+    }
+    cout << "Print : ";
     for (auto i = postInfix.begin(); i != postInfix.end(); ++i)
         cout << *i << " ";
+}
+
+
+bool angka(char input)
+{
+    return input != '(' && input != ')' && input != '+' && input != '-' && input != '/' && input != '*' && input != '%';
+}
+bool is_operator(char input)
+{
+    return input == '+' || input == '-' || input == '/' || input == '*' || input == '%';
+}
+bool is_left_p(string input)
+{
+    return input == "(";
+}
+bool is_right_p(string input)
+{
+    return input == ")";
+}
+bool is_minus(char input)
+{
+    return input == '-';
+}
+bool is_angka_str(string input)
+{
+    return input != "(" && input != ")" && input != "+" && input != "-" && input != "/" && input != "*" && input != "%";
+}
+bool is_operator_str(string input)
+{
+    return input == "+" || input == "-" || input == "/" || input == "*" || input == "%";
+}
+int precedence(string input)
+{
+    if (input == "*" || input == "/")
+    {
+        return 2;
+    }
+    else if (input == "+" || input == "-")
+    {
+        return 3;
+    }
+    return 1;
 }
